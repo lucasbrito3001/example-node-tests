@@ -2,28 +2,32 @@ pipeline {
     agent any
 
     stages {
-        stage("Build docker image") {
+        stage('Build docker image') {
             steps {
                 script {
-                   dockerapp = docker.build("lucasbrito3001/example-test-node:${env.BUILD_ID}", ".")
+                    dockerapp = docker.build("lucasbrito3001/example-test-node:${env.BUILD_ID}", '.')
                 }
             }
         }
 
-        stage("Push docker image") {
+        stage('Push docker image') {
             steps {
                 script {
-                    docker.withRegistry("https://registry.hub.docker.com", "DOCKER_HUB") {
-                        dockerapp.push("latest")
+                    /* groovylint-disable-next-line NestedBlockDepth */
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB') {
+                        dockerapp.push('latest')
                         dockerapp.push("${env.BUILD_ID}")
                     }
                 }
             }
         }
-        // stage("Deploy") {
-        //     steps {
-                
-        //     }
-        // }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                withKubeconfig([credentialsId: 'KUBE_CONFIG']) {
+                    sh: 'kubectl apply -f ./k8s/deployment.yaml'
+                }
+            }
+        }
     }
 }
