@@ -25,6 +25,7 @@ pipeline {
         stage('Deploy Kubernetes') {
             steps {
                 withKubeConfig([credentialsId: 'KUBE_CONFIG']) {
+                    sh 'sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin'
                     sh 'kubectl apply -f ./k8s/deployment.yaml'
                 }
             }
