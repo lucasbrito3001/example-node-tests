@@ -5,7 +5,7 @@ pipeline {
         stage("Build docker image") {
             steps {
                 script {
-                   dockerapp = docker.build("lucasdbrito/example-test-node:${env.BUILD_ID}", ".")
+                   dockerapp = docker.build("lucasbrito3001/example-test-node:${env.BUILD_ID}", ".")
                 }
             }
         }
