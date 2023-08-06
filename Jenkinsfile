@@ -9,15 +9,5 @@ pipeline {
                 }
             }
         }
-        stage("Push docker image") {
-            steps {
-
-            }
-        }
-        stage("Deploy") {
-            steps {
-
-            }
-        }
     }
 }
