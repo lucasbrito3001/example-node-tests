@@ -32,7 +32,7 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 /* groovylint-disable-next-line LineLength */
-                sh "sed -i 's/lucasbrito3001/example-test-node:latest/lucasbrito3001/example-test-node:${env.BUILD_ID}/g' ./k8s/deployment.yaml"
+                sh "sed -i 's/example-test-node:latest/example-test-node:${env.BUILD_ID}/g' ./k8s/deployment.yaml"
                 step([
                     $class: 'KubernetesEngineBuilder',
                     projectId: env.PROJECT_ID,
