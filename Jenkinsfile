@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        PROJECT_ID = 'quixotic-sunset-389718'
+        CLUSTER_NAME = 'gke-development'
+        LOCATION = 'us-east1-c'
+        CREDENTIALS_ID = 'gke-development-config'
+    }
+
     stages {
         stage('Build docker image') {
             steps {
@@ -22,11 +29,19 @@ pipeline {
             }
         }
 
-        stage('Deploy Kubernetes') {
+        stage('Deploy to GKE') {
             steps {
-                withKubeConfig([credentialsId: 'KUBE_CONFIG']) {
-                    sh 'kubectl apply -f ./k8s/deployment.yaml'
-                }
+                /* groovylint-disable-next-line LineLength */
+                sh "sed -i 's/lucasbrito3001/example-test-node:latest/lucasbrito3001/example-test-node:${env.BUILD_ID}/g' deployment.yaml"
+                step([
+                    $class: 'KubernetesEngineBuilder',
+                    projectId: env.PROJECT_ID,
+                    clusterName: env.CLUSTER_NAME,
+                    location: env.LOCATION,
+                    manifestPattern: 'deployment.yaml',
+                    credentialsId: env.CREDENTIALS_ID,
+                    verifyDeployments: true
+                ])
             }
         }
     }
