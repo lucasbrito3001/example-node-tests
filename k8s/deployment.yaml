@@ -9,6 +9,7 @@ spec:
   selector:
     matchLabels:
       app: example-node
+      team: devops
   template:
     metadata:
       labels:
@@ -19,3 +20,18 @@ spec:
           image: lucasbrito3001/example-test-node:latest
           ports:
             - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-node-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: example-node
+    team: devops
+  ports:
+    - port: 80
+      targetPort: 3000
