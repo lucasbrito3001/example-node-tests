@@ -17,6 +17,11 @@ spec:
       containers:
         - name: example-test-node
           image: lucasbrito3001/example-test-node:latest
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           ports:
             - containerPort: 3000
 ---
